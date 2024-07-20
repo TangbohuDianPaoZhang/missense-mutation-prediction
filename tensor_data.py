@@ -25,5 +25,5 @@ def load_data(csv_name, root_dir, batch_size):
     target_tensor = torch.tensor(target_data.values, dtype=torch.int64)
 
     train_dataset = utils.data.TensorDataset(feature_tensor, target_tensor)
-    train_dataloder = utils.data.Dataloader(train_dataset, batch_size=batch_size, shuffle=True)
+    train_dataloder = utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     return input_dim, train_dataloder

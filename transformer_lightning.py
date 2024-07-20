@@ -4,6 +4,7 @@ import lightning as L
 from sklearn.metrics import accuracy_score
 from torch import optim, nn, utils
 from torchmetrics import Accuracy, AUROC
+from tensor_data import load_data
 
 
 class Model(nn.Module):
@@ -102,31 +103,13 @@ class LitModel(L.LightningModule):
         return y_hat
     
 
-train_data_raw = pd.read_csv('dataset/train_dataset_filled(n=3).csv')
-train_feature = train_data_raw.drop('True Label', axis=1)
-train_target = train_data_raw['True Label']
-train_tensor = torch.tensor(train_feature.values, dtype=torch.float32)
-target_tensor = torch.tensor(train_target.values, dtype=torch.int64)
-
-test_data_raw = pd.read_csv('dataset/test_dataset_filled(n=3).csv')
-test_feature = test_data_raw.drop('True Label', axis=1)
-test_target = test_data_raw['True Label']
-test_tensor = torch.tensor(test_feature.values, dtype=torch.float32)
-test_target_tensor = torch.tensor(test_target.values, dtype=torch.int64)
-
-input_dim = train_feature.shape[1]
+batch_size = 32
+input_dim, train_dataloader = load_data('train_dataset_filled(n=3).csv', 'dataset', batch_size)
+test, test_dataloader = load_data('test_dataset_filled(n=3).csv', 'dataset', batch_size)
 model_dim = 256
 num_classes = 2  # 根据实际类别数量设置
-batch_size = 32
 model = Model(input_dim=input_dim, model_dim=model_dim, num_classes=num_classes)
 lit_model = LitModel(model)
 
-train_dataset = utils.data.TensorDataset(train_tensor, target_tensor)
-train_dataloader = utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-test_dataset = utils.data.TensorDataset(test_tensor, test_target_tensor)
-test_dataloader = utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-
 trainer = L.Trainer(limit_train_batches=100, max_epochs=15, devices=1, accelerator="gpu", log_every_n_steps=10, enable_checkpointing=True)
 trainer.fit(model=lit_model, train_dataloaders=train_dataloader, val_dataloaders=test_dataloader)
-
-# trainer.test(dataloaders=test_dataloader)
