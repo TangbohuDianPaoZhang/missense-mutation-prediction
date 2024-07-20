@@ -8,7 +8,6 @@ column_to_drop = ['True Label', 'CHROM', 'Nuc-Pos', 'REF-Nuc', 'ALT-Nuc',
                   'Ensembl-Gene-ID', 'Ensembl-Protein-ID', 'Ensembl-Transcript-ID',
                   'Uniprot-Accession', 'Amino_acids', 'cDNA_position', 'CDS_position',
                   'Protein_position', 'Codons', 'DOMAINS', 'Consequence', 'IMPACT',
-                #   'kGp3_AF', 'ExAC_AF', 'gnomAD_exomes_AF', 'ClinVar_preferred_disease_name_in_CLNDISDB']
                   'kGp3_AF', 'ExAC_AF', 'gnomAD_exomes_AF', 'ClinVar_preferred_disease_name_in_CLNDISDB']
 x = df.drop(column_to_drop, axis=1)
 y = df['True Label']
